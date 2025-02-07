@@ -8,7 +8,7 @@
         <div class="col-sm-12 col-md-12 col-lg-6">
             <h1 class="mb-3">Register</h1>
 
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 <div asp-validation-summary="All" class="text-danger"></div>
 
                 <div class="mb-3">
@@ -73,9 +73,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.ResumeFilePath">Resume (File Path)</label>
-                    <input type="text" asp-for="RModel.ResumeFilePath" class="form-control" />
-                    <span asp-validation-for="RModel.ResumeFilePath" class="text-danger"></span>
+                    <label class="form-label" asp-for="RModel.ResumeFile">Resume (Upload File)</label>
+                    <input type="file" asp-for="RModel.ResumeFile" class="form-control" />
+                    <span asp-validation-for="RModel.ResumeFile" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">

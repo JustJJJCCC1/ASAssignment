@@ -39,10 +39,10 @@ namespace ASAssignment1.ViewModels
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
-        [Required]
-        public string ResumeFilePath { get; set; } // Store file path or filename
+		[Required]
+		public IFormFile ResumeFile { get; set; } // Store file path or filename
 
-        [Required]
+		[Required]
         [MaxLength(1000)] // Optional length limit
         public string WhoAmI { get; set; }
     }

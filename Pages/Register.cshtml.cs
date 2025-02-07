@@ -4,73 +4,87 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace ASAssignment1.Pages
 {
-	public class RegisterModel : PageModel
-	{
-		private readonly AuthDbContext _context; // Use your custom DbContext
-		[BindProperty]
-		public Register RModel { get; set; }
+    public class RegisterModel : PageModel
+    {
+        private readonly AuthDbContext _context;
+        private readonly IWebHostEnvironment _environment; // Inject environment for file saving
 
-		public RegisterModel(AuthDbContext context)
-		{
-			_context = context;
-		}
+        [BindProperty]
+        public Register RModel { get; set; }
 
-		public void OnGet()
-		{
-		}
+        public RegisterModel(AuthDbContext context, IWebHostEnvironment environment)
+        {
+            _context = context;
+            _environment = environment;
+        }
 
-		public async Task<IActionResult> OnPostAsync()
-		{
-			if (ModelState.IsValid)
-			{
-				// Create a new user using your custom model
-				var user = new User
-				{
-					FirstName = RModel.FirstName,
-					LastName = RModel.LastName,
-					Email = RModel.Email,
-					Gender = RModel.Gender,
-					NRIC = RModel.NRIC,
-					DateOfBirth = RModel.DateOfBirth,
-					ResumeFilePath = RModel.ResumeFilePath,
-					WhoAmI = RModel.WhoAmI
-				};
+        public void OnGet()
+        {
+        }
 
-				// Hash the password
-				user.Password = HashPassword(RModel.Password);
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                string relativeFilePath = null;
+                if (RModel.ResumeFile != null)
+                {
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(RModel.ResumeFile.FileName)}";
+                    var uploadsFolder = Path.Combine("uploads"); // Relative path
+                    var absolutePath = Path.Combine(_environment.WebRootPath, uploadsFolder, fileName);
 
-				//Hash the NRIC
-				user.NRIC = HashPassword(RModel.NRIC);
+                    // Ensure uploads directory exists
+                    Directory.CreateDirectory(Path.Combine(_environment.WebRootPath, "uploads"));
 
-				// Check if the user already exists
-				if (_context.Users.Any(u => u.Email == user.Email))
-				{
-					ModelState.AddModelError("Email", "Email already exists");
-					return Page();
-				}
+                    using var fileStream = new FileStream(absolutePath, FileMode.Create);
+                    await RModel.ResumeFile.CopyToAsync(fileStream);
+
+                    relativeFilePath = Path.Combine(uploadsFolder, fileName).Replace("\\", "/"); // Store as "uploads/filename.ext"
+                }
+
+                var user = new User
+                {
+                    FirstName = RModel.FirstName,
+                    LastName = RModel.LastName,
+                    Email = RModel.Email,
+                    Gender = RModel.Gender,
+                    NRIC = HashPassword(RModel.NRIC),
+                    DateOfBirth = RModel.DateOfBirth,
+                    ResumeFilePath = relativeFilePath, // Store only the relative path
+                    WhoAmI = RModel.WhoAmI
+                };
+
+                user.Password = HashPassword(RModel.Password);
+
+                if (_context.Users.Any(u => u.Email == user.Email))
+                {
+                    ModelState.AddModelError("Email", "Email already exists");
+                    return Page();
+                }
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return RedirectToPage("Index");
+            }
+            return Page();
+        }
 
 
-				// Save the user to the database
-				_context.Users.Add(user);
-				await _context.SaveChangesAsync();
-
-				// Optionally sign in the user here if needed, or redirect to a different page
-				return RedirectToPage("Index");
-			}
-			return Page();
-		}
-
-		// Hash the password (you can use a stronger hash like bcrypt, but SHA256 is shown for simplicity)
-		private string HashPassword(string password)
-		{
-			using (var sha256 = SHA256.Create())
-			{
-				byte[] hashBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-				return Convert.ToBase64String(hashBytes);
-			}
-		}
-	}
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] hashBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(hashBytes);
+            }
+        }
+    }
 }
