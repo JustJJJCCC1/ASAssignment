@@ -1,0 +1,12 @@
+﻿@page
+@model ASAssignment1.Pages.LogoutModel
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["LogoutMessage"] != null)
+{
+    <p style="color: green; font-weight: bold;">@TempData["LogoutMessage"]</p>
+}
