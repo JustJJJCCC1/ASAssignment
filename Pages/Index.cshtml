@@ -4,7 +4,14 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about building Web apps with ASP.NET Core.</p>
+<div class="container mt-5">
+    <h1>Welcome, @Model.User.FirstName @Model.User.LastName!</h1>
+    <p><strong>Email:</strong> @Model.User.Email</p>
+    <p><strong>Gender:</strong> @Model.User.Gender</p>
+    <p><strong>Date of Birth:</strong> @Model.User.DateOfBirth.ToShortDateString()</p>
+    <p><strong>NRIC:</strong> @Model.DecryptedNRIC</p>
+    <p><strong>Resume File:</strong> <a href="@Model.User.ResumeFilePath" target="_blank">Download</a></p>
+    <p><strong>Who am I: </strong> @Model.User.WhoAmI</p>
+
+    <a href="/Logout" class="btn btn-danger">Logout</a>
 </div>

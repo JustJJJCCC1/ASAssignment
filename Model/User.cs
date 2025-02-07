@@ -29,5 +29,7 @@ namespace ASAssignment1.Model
 		public string ResumeFilePath { get; set; }
 
 		public string WhoAmI { get; set; }
-	}
+        public int FailedLoginAttempts { get; set; } = 0;
+
+    }
 }

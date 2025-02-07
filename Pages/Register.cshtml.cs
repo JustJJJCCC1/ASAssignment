@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Threading.Tasks;
+using System.Text;
+using System.Xml.Serialization;
+using Microsoft.Extensions.Configuration;
 
 namespace ASAssignment1.Pages
 {
@@ -15,14 +18,16 @@ namespace ASAssignment1.Pages
     {
         private readonly AuthDbContext _context;
         private readonly IWebHostEnvironment _environment; // Inject environment for file saving
+        private readonly IConfiguration _configuration; // Inject configuration
 
         [BindProperty]
         public Register RModel { get; set; }
 
-        public RegisterModel(AuthDbContext context, IWebHostEnvironment environment)
+        public RegisterModel(AuthDbContext context, IWebHostEnvironment environment, IConfiguration configuration)
         {
             _context = context;
             _environment = environment;
+            _configuration = configuration;
         }
 
         public void OnGet()
@@ -55,7 +60,7 @@ namespace ASAssignment1.Pages
                     LastName = RModel.LastName,
                     Email = RModel.Email,
                     Gender = RModel.Gender,
-                    NRIC = HashPassword(RModel.NRIC),
+                    NRIC = EncryptNRIC(RModel.NRIC),
                     DateOfBirth = RModel.DateOfBirth,
                     ResumeFilePath = relativeFilePath, // Store only the relative path
                     WhoAmI = RModel.WhoAmI
@@ -75,6 +80,37 @@ namespace ASAssignment1.Pages
                 return RedirectToPage("Index");
             }
             return Page();
+        }
+
+        // Encrypt the NRIC using AES
+        private string EncryptNRIC(string nric)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                // Retrieve the AES Key and IV directly from appsettings.json
+                string keyBase64 = _configuration["EncryptionKeys:AESKey"];
+                string ivBase64 = _configuration["EncryptionKeys:AESIV"];
+
+                byte[] key = Convert.FromBase64String(keyBase64);
+                byte[] iv = Convert.FromBase64String(ivBase64);
+
+                aesAlg.Key = key;
+                aesAlg.IV = iv;
+
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(nric);
+                        }
+                    }
+                    return Convert.ToBase64String(msEncrypt.ToArray()); // Return encrypted NRIC as Base64 string
+                }
+            }
         }
 
 
