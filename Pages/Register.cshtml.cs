@@ -70,7 +70,7 @@ namespace ASAssignment1.Pages
                     NRIC = EncryptNRIC(RModel.NRIC),
                     DateOfBirth = RModel.DateOfBirth,
                     ResumeFilePath = relativeFilePath, // Store only the relative path
-                    WhoAmI = RModel.WhoAmI
+                    WhoAmI = EncodeWhoAmI(RModel.WhoAmI)
                 };
 
                 user.Password = HashPassword(RModel.Password);
@@ -118,6 +118,12 @@ namespace ASAssignment1.Pages
                     return Convert.ToBase64String(msEncrypt.ToArray()); // Return encrypted NRIC as Base64 string
                 }
             }
+        }
+
+        // Encode the WhoAmI string (URL encoding)
+        private string EncodeWhoAmI(string whoAmI)
+        {
+            return Uri.EscapeDataString(whoAmI); // URL encode the WhoAmI string
         }
 
 
