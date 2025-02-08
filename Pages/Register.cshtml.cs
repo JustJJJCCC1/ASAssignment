@@ -41,7 +41,14 @@ namespace ASAssignment1.Pages
                 string relativeFilePath = null;
                 if (RModel.ResumeFile != null)
                 {
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(RModel.ResumeFile.FileName)}";
+                    var fileExtension = Path.GetExtension(RModel.ResumeFile.FileName).ToLower();
+                    if (fileExtension != ".pdf" && fileExtension != ".docx")
+                    {
+                        ModelState.AddModelError("RModel.ResumeFile", "Only PDF and DOCX files are allowed.");
+                        return Page();
+                    }
+
+                    var fileName = $"{Guid.NewGuid()}{fileExtension}";
                     var uploadsFolder = Path.Combine("uploads"); // Relative path
                     var absolutePath = Path.Combine(_environment.WebRootPath, uploadsFolder, fileName);
 
