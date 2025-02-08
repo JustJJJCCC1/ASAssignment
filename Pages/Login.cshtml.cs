@@ -39,6 +39,27 @@ namespace ASAssignment1.Pages
                 return Page();
             }
 
+            // Check last failed login attempt from AuditLog
+            var lastFailedAttempt = _context.AuditLogs
+                .Where(a => a.Email == user.Email && a.Activity == "Failed login attempt")
+                .OrderByDescending(a => a.Timestamp)
+                .FirstOrDefault();
+
+            if (lastFailedAttempt != null && (DateTime.UtcNow - lastFailedAttempt.Timestamp).TotalMinutes > 5)
+            {
+                // Reset failed attempts if the last failed attempt was more than 5 minutes ago
+                user.FailedLoginAttempts = 0;
+                await _context.SaveChangesAsync();
+
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    Email = user.Email,
+                    Activity = "Failed login attempt count reset after 5 minutes",
+                    Timestamp = DateTime.UtcNow
+                });
+                await _context.SaveChangesAsync();
+            }
+
             // Check if the account is locked
             if (user.FailedLoginAttempts >= MaxFailedAttempts)
             {
