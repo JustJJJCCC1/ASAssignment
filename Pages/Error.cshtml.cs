@@ -1,28 +1,28 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ASAssignment1.Pages
 {
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [IgnoreAntiforgeryToken]
     public class ErrorModel : PageModel
     {
-        public string? RequestId { get; set; }
+        [BindProperty]
+        public int? StatusCode { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public string ErrorMessage { get; set; } = "An unexpected error occurred.";
 
-        private readonly ILogger<ErrorModel> _logger;
-
-        public ErrorModel(ILogger<ErrorModel> logger)
+        public void OnGet(int? code)
         {
-            _logger = logger;
-        }
-
-        public void OnGet()
-        {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            StatusCode = code;
+            if (code.HasValue)
+            {
+                ErrorMessage = code switch
+                {
+                    404 => "Page not found.",
+                    500 => "Internal server error.",
+                    403 => "Access denied.",
+                    _ => "An unexpected error occurred."
+                };
+            }
         }
     }
-
 }
