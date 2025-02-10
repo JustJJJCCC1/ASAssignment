@@ -1,7 +1,16 @@
 ﻿@page
 @model ASAssignment1.Pages.RegisterModel
+@inject IConfiguration configuration
 @{
+    var siteKey = configuration["reCAPTCHA:SiteKey"];
 }
+
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script>
+    function onSubmit(token) {
+        document.getElementById("Register_Form").submit();
+    }
+</script>
 
 <div class="container mt-5">
     <div class="row justify-content-center align-items-center">
@@ -87,7 +96,12 @@
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Register</button>
+                            <button class="g-recaptcha btn btn-primary"
+                                    data-sitekey="@siteKey"
+                                    data-callback='onSubmit'
+                                    data-action='submit'>
+                                Register
+                            </button>
                         </div>
                     </form>
                 </div>

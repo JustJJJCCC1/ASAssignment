@@ -1,7 +1,16 @@
 ﻿@page
 @model ASAssignment1.Pages.LoginModel
+@inject IConfiguration configuration
 @{
+    var siteKey = configuration["reCAPTCHA:SiteKey"];
 }
+
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script>
+    function onSubmit(token) {
+        document.getElementById("Login_Form").submit();
+    }
+</script>
 
 <div class="container mt-5">
     <div class="row justify-content-center align-items-center">
@@ -10,7 +19,7 @@
                 <div class="card-body">
                     <h1 class="mb-3 text-center">Login</h1>
 
-                    <form method="post">
+                    <form method="post" id="Login_Form">
                         <div asp-validation-summary="All" class="text-danger"></div>
 
                         <div class="mb-3">
@@ -26,7 +35,12 @@
                         </div>
                         <br />
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Login</button>
+                            <button class="g-recaptcha btn btn-primary"
+                                    data-sitekey="@siteKey"
+                                    data-callback='onSubmit'
+                                    data-action='submit'>
+                                Submit
+                            </button>
                         </div>
                     </form>
                 </div>

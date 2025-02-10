@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Configuration;
+using ASAssignment1.Services;
 
 namespace ASAssignment1.Pages
 {
@@ -38,6 +39,18 @@ namespace ASAssignment1.Pages
         {
             if (ModelState.IsValid)
             {
+                // Retrieve reCAPTCHA token from form
+                string googleRecaptchaToken = Request.Form["g-recaptcha-response"].ToString();
+                string secretKey = _configuration["ReCaptcha:SecretKey"];
+                string verificationUrl = _configuration["ReCaptcha:VerificationUrl"];
+
+                bool isValid = await RecaptchaService.verifyReCaptchaV3(googleRecaptchaToken, secretKey, verificationUrl);
+                if (!isValid)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid reCAPTCHA. Please try again.");
+                    return Page();
+                }
+
                 string relativeFilePath = null;
                 if (RModel.ResumeFile != null)
                 {

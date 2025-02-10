@@ -8,20 +8,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using ASAssignment1.ViewModels;
 using System;
+using ASAssignment1.Services;
 
 namespace ASAssignment1.Pages
 {
     public class LoginModel : PageModel
     {
         private readonly AuthDbContext _context;
+        private readonly IConfiguration _configuration;
         private const int MaxFailedAttempts = 3;
 
         [BindProperty]
         public Login RModel { get; set; }
 
-        public LoginModel(AuthDbContext context)
+        public LoginModel(AuthDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public void OnGet()
@@ -84,6 +87,19 @@ namespace ASAssignment1.Pages
 
                 ModelState.AddModelError(string.Empty, "Invalid email or password.");
                 return base.Page();
+            }
+
+            string googleRecaptchaToken = Request.Form["g-recaptcha-response"].ToString();
+
+            //verify the token
+            string secretKey = _configuration["ReCaptcha:SecretKey"];
+            string verificationUrl = _configuration["ReCaptcha:VerificationUrl"];
+            bool isValid = await RecaptchaService.verifyReCaptchaV3(googleRecaptchaToken, secretKey, verificationUrl);
+
+            if (!isValid)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid reCAPTCHA. Please try again.");
+                return Page();
             }
 
             // Reset failed attempts on successful login
