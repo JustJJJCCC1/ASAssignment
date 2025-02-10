@@ -60,7 +60,14 @@ namespace ASAssignment1.Pages
             {
                 TempData["PasswordAgeRestriction"] = $"You can only change your password once every {minPasswordAgeDays} day(s).";
             }
-            
+
+            // Calculate password age in days and pass it to the view
+            var passwordAgeInDays = lastPasswordChange.HasValue ? (int)(DateTime.UtcNow - lastPasswordChange.Value).TotalDays : 0;
+
+            // Pass the password age to JavaScript
+            ViewData["PasswordAgeInDays"] = passwordAgeInDays;
+
+
 
             return Page();
         }
