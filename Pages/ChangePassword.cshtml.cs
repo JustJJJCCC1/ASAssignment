@@ -5,16 +5,21 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using ASAssignment1.Services;
+
 
 namespace ASAssignment1.Pages
 {
     public class ChangePasswordModel : PageModel
     {
         private readonly AuthDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public ChangePasswordModel(AuthDbContext context)
+        public ChangePasswordModel(AuthDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -72,12 +77,23 @@ namespace ASAssignment1.Pages
             return Page();
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             var email = HttpContext.Session.GetString("UserEmail");
             if (string.IsNullOrEmpty(email))
             {
                 return RedirectToPage("/Login");
+            }
+
+            string googleRecaptchaToken = Request.Form["g-recaptcha-response"].ToString();
+            string secretKey = _configuration["ReCaptcha:SecretKey"];
+            string verificationUrl = _configuration["ReCaptcha:VerificationUrl"];
+            bool isValid = await RecaptchaService.verifyReCaptchaV3(googleRecaptchaToken, secretKey, verificationUrl);
+
+            if (!isValid)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid reCAPTCHA. Please try again.");
+                return Page();
             }
 
             var user = _context.Users.Include(u => u.PasswordHistory)
