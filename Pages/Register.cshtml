@@ -5,89 +5,93 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center align-items-center">
-        <div class="col-sm-12 col-md-12 col-lg-6">
-            <h1 class="mb-3">Register</h1>
+        <div class="col-sm-12 col-md-10 col-lg-8">
+            <div class="card shadow-lg w-100 px-3">
+                <div class="card-body">
+                    <h1 class="mb-3 text-center">Register</h1>
 
-            <form method="post" enctype="multipart/form-data">
-                <div asp-validation-summary="All" class="text-danger"></div>
+                    <form method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger"></div>
 
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.FirstName">First Name</label>
-                    <input type="text" asp-for="RModel.FirstName" class="form-control" />
-                    <span asp-validation-for="RModel.FirstName" class="text-danger"></span>
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.FirstName">First Name</label>
+                            <input type="text" asp-for="RModel.FirstName" class="form-control" />
+                            <span asp-validation-for="RModel.FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.LastName">Last Name</label>
+                            <input type="text" asp-for="RModel.LastName" class="form-control" />
+                            <span asp-validation-for="RModel.LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.Gender">Gender</label>
+                            <select asp-for="RModel.Gender" class="form-control">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Others">Others</option>
+                                <option value="Prefer Not To Say">Prefer Not To Say</option>
+                            </select>
+                            <span asp-validation-for="RModel.Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.NRIC">NRIC</label>
+                            <input type="text" asp-for="RModel.NRIC" class="form-control" />
+                            <span asp-validation-for="RModel.NRIC" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.DateOfBirth">Date of Birth</label>
+                            <input type="date" asp-for="RModel.DateOfBirth" class="form-control" />
+                            <span asp-validation-for="RModel.DateOfBirth" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.Email">Email Address</label>
+                            <input type="email" asp-for="RModel.Email" class="form-control" />
+                            <span asp-validation-for="RModel.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.Password">Password</label>
+                            <input type="password" asp-for="RModel.Password" class="form-control" id="passwordInput" />
+                            <span asp-validation-for="RModel.Password" class="text-danger"></span>
+                            <div id="passwordRequirements" class="text-muted mt-2">
+                                <small id="lengthReq">Minimum 8 characters</small><br />
+                                <small id="upperReq">At least one uppercase letter</small><br />
+                                <small id="lowerReq">At least one lowercase letter</small><br />
+                                <small id="digitReq">At least one digit</small><br />
+                                <small id="specialReq">At least one special character (!#$%^&*@@)</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.ConfirmPassword">Confirm Password</label>
+                            <input type="password" asp-for="RModel.ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.ResumeFile">Resume (Upload File)</label>
+                            <input type="file" asp-for="RModel.ResumeFile" class="form-control" />
+                            <span asp-validation-for="RModel.ResumeFile" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="RModel.WhoAmI">Who Am I?</label>
+                            <textarea asp-for="RModel.WhoAmI" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="RModel.WhoAmI" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.LastName">Last Name</label>
-                    <input type="text" asp-for="RModel.LastName" class="form-control" />
-                    <span asp-validation-for="RModel.LastName" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.Gender">Gender</label>
-                    <select asp-for="RModel.Gender" class="form-control">
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Others">Others</option>
-                        <option value="Prefer Not To Say">Prefer Not To Say</option>
-                    </select>
-                    <span asp-validation-for="RModel.Gender" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.NRIC">NRIC</label>
-                    <input type="text" asp-for="RModel.NRIC" class="form-control" />
-                    <span asp-validation-for="RModel.NRIC" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.DateOfBirth">Date of Birth</label>
-                    <input type="date" asp-for="RModel.DateOfBirth" class="form-control" />
-                    <span asp-validation-for="RModel.DateOfBirth" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.Email">Email Address</label>
-                    <input type="email" asp-for="RModel.Email" class="form-control" />
-                    <span asp-validation-for="RModel.Email" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.Password">Password</label>
-                    <input type="password" asp-for="RModel.Password" class="form-control" id="passwordInput" />
-                    <span asp-validation-for="RModel.Password" class="text-danger"></span>
-                    <div id="passwordRequirements" class="text-muted mt-2">
-                        <small id="lengthReq">Minimum 8 characters</small><br />
-                        <small id="upperReq">At least one uppercase letter</small><br />
-                        <small id="lowerReq">At least one lowercase letter</small><br />
-                        <small id="digitReq">At least one digit</small><br />
-                        <small id="specialReq">At least one special character (!#$%^&*@@)</small>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.ConfirmPassword">Confirm Password</label>
-                    <input type="password" asp-for="RModel.ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.ResumeFile">Resume (Upload File)</label>
-                    <input type="file" asp-for="RModel.ResumeFile" class="form-control" />
-                    <span asp-validation-for="RModel.ResumeFile" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" asp-for="RModel.WhoAmI">Who Am I?</label>
-                    <textarea asp-for="RModel.WhoAmI" class="form-control" rows="5"></textarea>
-                    <span asp-validation-for="RModel.WhoAmI" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-primary">Register</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -105,40 +109,19 @@
             const value = passwordInput.value;
 
             // Check password length
-            if (value.length >= 8) {
-                lengthReq.style.color = "green";
-            } else {
-                lengthReq.style.color = "red";
-            }
+            lengthReq.style.color = value.length >= 8 ? "green" : "red";
 
             // Check for uppercase letters
-            if (/[A-Z]/.test(value)) {
-                upperReq.style.color = "green";
-            } else {
-                upperReq.style.color = "red";
-            }
+            upperReq.style.color = /[A-Z]/.test(value) ? "green" : "red";
 
             // Check for lowercase letters
-            if (/[a-z]/.test(value)) {
-                lowerReq.style.color = "green";
-            } else {
-                lowerReq.style.color = "red";
-            }
+            lowerReq.style.color = /[a-z]/.test(value) ? "green" : "red";
 
             // Check for digits
-            if (/\d/.test(value)) {
-                digitReq.style.color = "green";
-            } else {
-                digitReq.style.color = "red";
-            }
+            digitReq.style.color = /\d/.test(value) ? "green" : "red";
 
             // Check for special characters
-            if (/[!#$%^&*@@]/.test(value)) {
-                specialReq.style.color = "green";
-            } else {
-                specialReq.style.color = "red";
-            }
+            specialReq.style.color = /[!#$%^&*@@]/.test(value) ? "green" : "red";
         });
     });
 </script>
-
