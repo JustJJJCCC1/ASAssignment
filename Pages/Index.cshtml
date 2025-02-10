@@ -4,14 +4,18 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="container mt-5">
-    <h1>Welcome, @Model.User.FirstName @Model.User.LastName!</h1>
-    <p><strong>Email:</strong> @Model.User.Email</p>
-    <p><strong>Gender:</strong> @Model.User.Gender</p>
-    <p><strong>Date of Birth:</strong> @Model.User.DateOfBirth.ToShortDateString()</p>
-    <p><strong>NRIC:</strong> @Model.DecryptedNRIC</p>
-    <p><strong>Resume File:</strong> <a href="@Model.User.ResumeFilePath" target="_blank">Download</a></p>
-    <p><strong>Who am I: </strong> @Model.User.WhoAmI</p>
-
-    <a asp-page="/ChangePassword" class="btn btn-primary mt-3">Change Password</a>
+<div class="container d-flex justify-content-center align-items-center mt-5">
+    <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%;">
+        <div class="card-body text-center">
+            <h2 class="card-title">Welcome, @Model.User.FirstName @Model.User.LastName!</h2>
+            <hr>
+            <p><strong>Email:</strong> @Model.User.Email</p>
+            <p><strong>Gender:</strong> @Model.User.Gender</p>
+            <p><strong>Date of Birth:</strong> @Model.User.DateOfBirth.ToShortDateString()</p>
+            <p><strong>NRIC:</strong> @Model.DecryptedNRIC</p>
+            <p><strong>Resume File:</strong> <a href="@Model.User.ResumeFilePath" target="_blank">Download</a></p>
+            <p><strong>Who am I:</strong> @Model.User.WhoAmI</p>
+            <a asp-page="/ChangePassword" class="btn btn-primary mt-3">Change Password</a>
+        </div>
+    </div>
 </div>
