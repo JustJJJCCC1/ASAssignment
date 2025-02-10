@@ -97,6 +97,28 @@ namespace ASAssignment1.Pages
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
+                // Add password to PasswordHistory table
+                var passwordHistory = new PasswordHistory
+                {
+                    UserId = user.Id, 
+                    Password = user.Password,
+                    DateChanged = DateTime.UtcNow
+                };
+
+                _context.PasswordHistories.Add(passwordHistory);
+                await _context.SaveChangesAsync();
+
+
+                // Add audit log entry
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    Email = user.Email,
+                    Activity = "Account Created",
+                    Timestamp = DateTime.UtcNow
+                });
+
+                await _context.SaveChangesAsync();
+
                 return RedirectToPage("Index");
             }
             return Page();

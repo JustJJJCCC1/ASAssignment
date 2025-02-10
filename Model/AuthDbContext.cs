@@ -20,5 +20,6 @@ namespace ASAssignment1.Model
 		// Define DbSets for your custom tables
 		public DbSet<User> Users { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<PasswordHistory> PasswordHistories { get; set; }
     }
 }

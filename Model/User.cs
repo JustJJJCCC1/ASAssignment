@@ -30,6 +30,7 @@ namespace ASAssignment1.Model
 
 		public string WhoAmI { get; set; }
         public int FailedLoginAttempts { get; set; } = 0;
+        public List<PasswordHistory> PasswordHistory { get; set; }
 
     }
 }

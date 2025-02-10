@@ -1,6 +1,7 @@
 using ASAssignment1.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Security.Cryptography;
 
@@ -28,11 +29,34 @@ namespace ASAssignment1.Pages
                 return RedirectToPage("/Login");
             }
 
-            User = _context.Users.SingleOrDefault(u => u.Email == email);
+            User = _context.Users.Include(u => u.PasswordHistory)
+                         .SingleOrDefault(u => u.Email == email);
             if (User == null)
             {
                 return RedirectToPage("/Login");
             }
+
+            // Get the most recent password change date
+            var lastPasswordChange = User.PasswordHistory.OrderByDescending(ph => ph.DateChanged)
+                                                         .FirstOrDefault()?.DateChanged;
+
+            if (lastPasswordChange == null)
+            {
+                // If the password has never been changed, force the user to change it
+                return RedirectToPage("/ChangePassword");
+            }
+
+            // Define password age policy
+            int maxPasswordAgeDays = 90; // Password must be changed every 90 days
+            DateTime passwordExpiryDate = lastPasswordChange.Value.AddDays(maxPasswordAgeDays);
+
+            if (DateTime.UtcNow > passwordExpiryDate)
+            {
+                // If the password is too old, force a password change
+                TempData["PasswordExpired"] = "Your password has expired. Please change it.";
+                return RedirectToPage("/ChangePassword");
+            }
+
 
             // Decrypt NRIC before displaying
             if (!string.IsNullOrEmpty(User.NRIC))
