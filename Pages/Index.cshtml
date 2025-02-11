@@ -14,8 +14,49 @@
             <p><strong>Date of Birth:</strong> @Model.User.DateOfBirth.ToShortDateString()</p>
             <p><strong>NRIC:</strong> @Model.DecryptedNRIC</p>
             <p><strong>Resume File:</strong> <a href="@Model.User.ResumeFilePath" target="_blank">Download</a></p>
-            <p><strong>Who am I:</strong> @Model.User.WhoAmI</p>
+            <p><strong>Who am I:</strong> @System.Net.WebUtility.UrlDecode(Model.User.WhoAmI)</p>
             <a asp-page="/ChangePassword" class="btn btn-primary mt-3">Change Password</a>
         </div>
     </div>
 </div>
+
+<script>
+    function checkSession() {
+        fetch('?handler=CheckSession')
+            .then(response => response.json())
+            .then(data => {
+                if (data.sessionExpired) {
+                    showSessionTimeoutPopup();
+                }
+            })
+            .catch(error => console.error("Error checking session:", error));
+    }
+
+    function showSessionTimeoutPopup() {
+        const modalHtml = `
+            <div id="sessionTimeoutModal" class="modal fade show" tabindex="-1" role="dialog" style="display: block; background: rgba(0, 0, 0, 0.5);">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Session Timed Out</h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>Your session has expired. Please log in again.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="redirectToLogin()">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML("beforeend", modalHtml);
+    }
+
+    function redirectToLogin() {
+        window.location.href = "/Login";
+    }
+
+    setInterval(checkSession, 60000); // Check session every 1 minute
+</script>
+

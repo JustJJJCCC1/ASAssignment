@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Security.Cryptography;
 
 namespace ASAssignment1.Pages
@@ -20,6 +21,12 @@ namespace ASAssignment1.Pages
             _context = context;
             _configuration = configuration;
         }
+        public IActionResult OnGetCheckSession()
+        {
+            var email = HttpContext.Session.GetString("UserEmail");
+            return new JsonResult(new { sessionExpired = string.IsNullOrEmpty(email) });
+        }
+
 
         public IActionResult OnGet()
         {
@@ -63,6 +70,9 @@ namespace ASAssignment1.Pages
             {
                 DecryptedNRIC = DecryptNRIC(User.NRIC);
             }
+
+            User.WhoAmI = WebUtility.UrlDecode(User.WhoAmI);
+
 
             return Page();
         }
