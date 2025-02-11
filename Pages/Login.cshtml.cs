@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using ASAssignment1.ViewModels;
 using System;
 using ASAssignment1.Services;
+using System.Net;
+
 
 namespace ASAssignment1.Pages
 {
@@ -89,7 +91,7 @@ namespace ASAssignment1.Pages
                 return base.Page();
             }
 
-            string googleRecaptchaToken = Request.Form["g-recaptcha-response"].ToString();
+            string googleRecaptchaToken = System.Net.WebUtility.HtmlEncode(Request.Form["g-recaptcha-response"].ToString());
 
             //verify the token
             string secretKey = _configuration["ReCaptcha:SecretKey"];

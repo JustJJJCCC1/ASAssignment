@@ -85,7 +85,7 @@ namespace ASAssignment1.Pages
                 return RedirectToPage("/Login");
             }
 
-            string googleRecaptchaToken = Request.Form["g-recaptcha-response"].ToString();
+            string googleRecaptchaToken = System.Net.WebUtility.HtmlEncode(Request.Form["g-recaptcha-response"].ToString());
             string secretKey = _configuration["ReCaptcha:SecretKey"];
             string verificationUrl = _configuration["ReCaptcha:VerificationUrl"];
             bool isValid = await RecaptchaService.verifyReCaptchaV3(googleRecaptchaToken, secretKey, verificationUrl);

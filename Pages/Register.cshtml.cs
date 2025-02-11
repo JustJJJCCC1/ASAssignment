@@ -40,7 +40,7 @@ namespace ASAssignment1.Pages
             if (ModelState.IsValid)
             {
                 // Retrieve reCAPTCHA token from form
-                string googleRecaptchaToken = Request.Form["g-recaptcha-response"].ToString();
+                string googleRecaptchaToken = System.Net.WebUtility.HtmlEncode(Request.Form["g-recaptcha-response"].ToString());
                 string secretKey = _configuration["ReCaptcha:SecretKey"];
                 string verificationUrl = _configuration["ReCaptcha:VerificationUrl"];
 
